@@ -4,5 +4,107 @@ nav_title: 安装指南
 description: 使用 create-next-app CLI创建新的Next.js应用，并设置TypeScript、ESLint和模块路径别名。
 ---
 
+## 安装(基于next源码安装)
+- 源码位置：`F:\www2025-in-win11\5_docs\all-documents\nextjs`，请先从github上克隆
+- 教程代码位置：`F:\www2025-in-win11\4_tutorial\nextjs`,以下简称 `next.js源码目录`
 
-## 第01课：安装
+1. **全局链接本地 Next.js 源码**  
+   在 Next.js 源码仓库根目录执行：  
+```bash
+    # 当前目录 next.js源码目录/packages/create-next-app
+    # pnpm setup  # 初始化 pnpm 环境，若已初始化则跳过此步骤
+    # 修改package.json中的bin字段，将bin指向src/cli.ts
+
+    pnpm link --global  # 将本地源码链接到全局 node_modules 
+    # 当前目录 next.js源码目录/packages/next
+```
+改为
+```json filename="packages/create-next-app/package.json" switcher
+    "bin": {
+        "create-next-app": "./dist/index.js" 
+     },
+```
+```json filename="packages/create-next-app2/package.json" switcher
+    "bin": {
+        "my-create-next-app": "./index.ts" 
+     },
+```
+
+### **二、创建新项目并绑定本地 Next.js**
+1. **初始化新项目**  
+   使用脚手架工具创建项目（支持自定义配置）：  
+   ```bash
+   npx create-next-app@latest my-next-app --use-pnpm
+   cd my-next-app 
+   ```
+
+2. **绑定本地 Next.js 依赖**  
+   在新项目中将全局链接的 Next.js 源码绑定到本地依赖：  
+   ```bash
+   pnpm link next  # 将全局的 next 链接到当前项目的 node_modules 
+   ```
+
+   *验证绑定是否成功：*  
+   - 检查 `node_modules/next` 是否为符号链接  
+   - 在 `package.json` 中确认 `next` 版本为本地路径（如 `"next": "link:../next.js/packages/next"`）
+
+---
+
+### **三、配置调试环境**
+1. **修改源码触发实时更新**  
+   在克隆的 Next.js 源码中修改任意文件（例如 `packages/next/src/server/base-server.ts`），修改后 `pnpm dev` 会自动重新编译 。
+
+2. **VSCode 调试配置**  
+   - 在项目根目录创建 `.vscode/launch.json`  
+   - 添加以下配置同时调试服务端和客户端：  
+     ```json
+     {
+       "version": "0.2.0",
+       "configurations": [
+         {
+           "name": "Next.js: Full Debug",
+           "type": "node-terminal",
+           "request": "launch",
+           "command": "pnpm dev",
+           "serverReadyAction": {
+             "pattern": "started server on .+, url: (https?://.+)",
+             "uriFormat": "%s",
+             "action": "debugWithChrome"
+           }
+         }
+       ]
+     } 
+     ```
+
+---
+
+### **四、验证调试效果**
+1. **在 Next.js 源码中添加调试日志**  
+   例如在 `packages/next/src/server/base-server.ts` 的 `handleRequest` 方法内添加：  
+   ```typescript
+   console.log('Debug: Request handled by local Next.js');
+   ```
+
+2. **启动项目并观察日志**  
+   ```bash
+   pnpm dev  # 开发模式下会加载本地修改的源码
+   ```
+   访问 `http://localhost:3000`，查看终端是否输出自定义日志 。
+
+---
+
+### **五、依赖管理注意事项**
+- **符号链接 vs 硬链接**  
+  使用 `pnpm link` 时依赖以符号链接形式存在，修改源码会实时同步到项目 。  
+  若需隔离依赖，可改用 `file:../next.js/packages/next` 协议（此时会硬链接依赖）。
+
+- **重置全局链接**  
+  若需恢复官方版本：  
+  ```bash
+   pnpm remove -g next
+   pnpm add -g next@latest
+  ```
+
+---
+
+通过以上步骤，你可以实现本地 Next.js 源码的实时调试，同时保持项目依赖的灵活性。若需贡献代码到官方仓库，建议参考 Next.js 的 [CONTRIBUTING.md](https://github.com/vercel/next.js/blob/canary/CONTRIBUTING.md) 规范。
