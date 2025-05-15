@@ -19,12 +19,12 @@ description: 使用 create-next-app CLI创建新的Next.js应用，并设置Type
     # 当前目录 next.js源码目录/packages/next
 ```
 改为
-```json filename="packages/create-next-app/package.json" switcher
+```json filename="packages/create-next-app/package.json【修改前】" switcher
     "bin": {
         "create-next-app": "./dist/index.js" 
      },
 ```
-```json filename="packages/create-next-app2/package.json" switcher
+```json filename="packages/create-next-app/package.json【修改后】" switcher
     "bin": {
         "my-create-next-app": "./index.ts" 
      },
