@@ -1,7 +1,7 @@
 ---
 title: 如何设置新的Next.js项目
 nav_title: 安装指南
-description: 使用`create-next-app` CLI创建新的Next.js应用，并设置TypeScript、ESLint和模块路径别名。
+description: 使用 create-next-app CLI创建新的Next.js应用，并设置TypeScript、ESLint和模块路径别名。
 ---
 
 {/* 本文档内容在App和Pages路由间共享。您可以使用`<PagesOnly>内容</PagesOnly>`组件添加特定于Pages路由的内容。任何共享内容不应包裹在组件中。*/}
@@ -15,11 +15,28 @@ description: 使用`create-next-app` CLI创建新的Next.js应用，并设置Typ
 
 ## 自动安装
 
-创建新Next.js应用最快的方法是使用[`create-next-app`](/docs/app/api-reference/cli/create-next-app)，它会自动为您设置一切。要创建项目，请运行：
+创建新Next.js应用最快的方法是使用[create-next-app](/docs/app/api-reference/cli/create-next-app)，它会自动为您设置一切。要创建项目，请运行：
 
-```bash filename="终端"
-npx create-next-app@latest
+
+
+
+```bash filename="终端" switcher
+npx create-next-app@latest nextjs-tutorial-01
 ```
+
+```jsx filename="app/layout.js" switcher
+# 使用 pnpm 创建新的 Next.js 项目（使用 App Router 和 TypeScript）
+pnpm create next-app@latest nextjs-tutorial-01 --typescript --app --eslint --src-dir --import-alias "@/*"
+
+# 进入项目目录
+nextjs-tutorial-01
+
+# 启动开发服务器
+pnpm dev 
+```
+
+
+
 
 安装过程中，您会看到以下提示：
 
